@@ -13,18 +13,6 @@ PrefabInstance:
       value: ObstacleV Variant
       objectReference: {fileID: 0}
     - target: {fileID: 1801010952268132471, guid: 782714c48caaf3f47b0d4045a5680954, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.88
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801010952268132471, guid: 782714c48caaf3f47b0d4045a5680954, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.31
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801010952268132471, guid: 782714c48caaf3f47b0d4045a5680954, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 1801010952268132471, guid: 782714c48caaf3f47b0d4045a5680954, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
       objectReference: {fileID: 0}

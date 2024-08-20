@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallColorChanger : MonoBehaviour
+public class CollisionColorChanger : MonoBehaviour
 {
     [SerializeField] Color changeToColor = Color.red;
 
@@ -18,6 +18,12 @@ public class WallColorChanger : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
+        //return if not colliding with player
+        if (other.gameObject.tag != "Player")
+        {
+            return;
+        }
+
         material.color = changeToColor;
         if (colorCoroutine != null)
         {

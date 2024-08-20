@@ -8,9 +8,11 @@ public class Mover : MonoBehaviour
     [SerializeField] float moveSpeed = 10f;
     private bool isColliding;
     private Coroutine colorCoroutine;
+    private float collidedTime;
     private Coroutine stopCollidingCoroutine;
     Material playerMaterial;
     Color materialColor;
+    ScoreKeeper scoreKeeper;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +20,8 @@ public class Mover : MonoBehaviour
         //get player material
         playerMaterial = GetComponent<Renderer>().material;
         materialColor = playerMaterial.color;
+
+        scoreKeeper = FindObjectOfType<ScoreKeeper>();
     }
 
     // Update is called once per frame
@@ -26,10 +30,30 @@ public class Mover : MonoBehaviour
         Move();
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Trigger exit " + other.gameObject.tag);
+        if (other.gameObject.tag == "Start")
+        {
+            scoreKeeper.IsGameActive = true;
+        }
+    }
+
     private void Move()
     {
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+        //ceck if player is colliding for too long and enable move again
+        if (isColliding && Time.time - collidedTime > 1f)
+        {
+            isColliding = false;
+            playerMaterial.color = materialColor;
+        }
+
         if (isColliding)
             return;
+
         //move player x and z values according to input, y remains unchanged
         float xValue = Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed;
         float zValue = Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed;
@@ -45,7 +69,6 @@ public class Mover : MonoBehaviour
         List<ContactPoint> contactPoints = new List<ContactPoint>();
         collision.GetContacts(contactPoints);
 
-        
         foreach (ContactPoint contact in contactPoints)
         {
             if (contact.normal == Vector3.forward || 
@@ -56,6 +79,12 @@ public class Mover : MonoBehaviour
                 transform.Translate(contact.normal / 25);
                 //change player material color to red
                 playerMaterial.color = Color.red;
+                if (colorCoroutine != null)
+                {
+                    StopCoroutine(colorCoroutine);
+                }
+                colorCoroutine = StartCoroutine(GameHelper.ChangeMateriaColorGradually(playerMaterial, materialColor));
+                collidedTime = Time.time;
             }
         }
 
@@ -77,11 +106,6 @@ public class Mover : MonoBehaviour
         yield return new WaitForSeconds(0.35f);
         isColliding = false;
         //change player material color to previuos but gradually for 1 sedond
-        if (colorCoroutine != null)
-        {
-            StopCoroutine(colorCoroutine);
-        }
-        colorCoroutine = StartCoroutine(GameHelper.ChangeMateriaColorGradually(playerMaterial, materialColor));
     }
 
 }
